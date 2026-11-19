@@ -4,7 +4,7 @@ declare global {
   interface Window {
     nyx: {
       version: string
-      setInteractive: (interactive: boolean) => void
+      reportInteractiveRects: (rects: { x: number; y: number; width: number; height: number }[]) => void
     }
   }
 }

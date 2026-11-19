@@ -13,11 +13,12 @@ kiroween-2026/
     hooks/               lint-on-save.json, keep-readme-in-sync.json, scripts/
     settings/            (mcp.json only if MCP servers are added)
   src/
-    shared/              types + zod schemas + heuristics used by main, preload, renderer, cli
+    shared/              types + zod schemas + heuristics + hit-test used by main, preload, renderer, cli
       types.ts           NyxState, WakeEvent, HelpContext, Settings, IPC messages
       protocol.ts        IPC socket message schema (zod)
       heuristics.ts      error/stack-trace regex heuristics (local, no LLM)
-    main/                index.ts, window.ts, tray.ts, clipboard-watcher.ts,
+      hittest.ts         Rect + isPointInRects (click-through hit-test, unit-tested)
+    main/                index.ts, window.ts, clickthrough.ts, tray.ts, clipboard-watcher.ts,
                          hotkey.ts, wake-engine.ts, llm-client.ts, settings.ts,
                          ipc-server.ts, triggers/
     preload/             index.ts (contextBridge API + types)

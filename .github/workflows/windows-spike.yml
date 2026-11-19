@@ -6,7 +6,7 @@ name: Windows spike build
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [master]
     paths:
       - 'src/**'
       - 'electron-builder.yml'

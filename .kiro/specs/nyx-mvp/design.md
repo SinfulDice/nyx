@@ -125,11 +125,21 @@ after the user's last interaction) returns Nyx to sleep.
 - One transparent, frameless, always-on-top, skip-taskbar, no-shadow window sized to
   the maximum bubble footprint, anchored top-right by default. Fixed size avoids
   resize jank on Linux.
-- Click-through: default the window to `setIgnoreMouseEvents(true,{forward:true})`.
-  A full-window transparent overlay tracks `mousemove`; when the cursor is over an
-  interactive element (Nyx or bubble) the handler calls
-  `setIgnoreMouseEvents(false)`, and re-enables click-through when it leaves. This is
-  the standard Electron technique and works reliably on X11/XWayland.
+- Click-through: the window starts in `setIgnoreMouseEvents(true, { forward: true })`.
+  The renderer reports the screen rects of all `[data-interactive]` elements (Nyx,
+  bubble, buttons) to main via IPC — on mount, on resize (ResizeObserver), and on
+  layout change. Main polls `screen.getCursorScreenPoint()` (~30 Hz; drops to ~5 Hz
+  while Nyx is sleeping) and toggles `setIgnoreMouseEvents(false)` only while the cursor
+  is inside a reported rect, re-enabling click-through when it leaves — and only calls
+  `setIgnoreMouseEvents` on transitions.
+- **Linux limitation:** `{ forward: true }` only forwards mouse-move events on macOS
+  and Windows, not on Linux (X11/Wayland). The mousemove-driven approach therefore
+  never received cursor events on Linux and left interactive regions click-through.
+  The polling approach does not depend on forwarded events; `{ forward: true }` is
+  kept as a bonus on Windows/macOS. `win.setShape()` on Linux X11 (sets a clickable
+  region) is a possible alternative but polling is the primary, cross-platform path.
+  At 5 Hz while sleeping there is up to ~200 ms latency before a click on Nyx is
+  captured; if that causes missed clicks, raise the sleeping rate or use setShape.
 - Anchor & multi-monitor: position relative to the active display's work area; store
   the chosen corner in Settings.
 

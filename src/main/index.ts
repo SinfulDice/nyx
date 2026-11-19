@@ -1,26 +1,36 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { createNyxWindow } from './window'
 import { SettingsStore } from './settings'
+import { ClickThroughController } from './clickthrough'
+import type { Rect } from '@shared/hittest'
 
 let win: BrowserWindow | null = null
+let clickThrough: ClickThroughController | null = null
+
+function launch(): void {
+  const w = createNyxWindow(new SettingsStore().getAll())
+  win = w
+  clickThrough = new ClickThroughController(w)
+  clickThrough.start()
+  w.on('closed', () => {
+    clickThrough?.stop()
+    clickThrough = null
+    win = null
+  })
+}
 
 app.whenReady().then(() => {
-  const settings = new SettingsStore()
-  win = createNyxWindow(settings.getAll())
+  launch()
 
-  // Renderer toggles click-through per cursor position: interactive=true means the
-  // cursor is over Nyx or the bubble, so capture pointer events; false = click-through
-  // (mouse moves are still forwarded so the renderer can keep tracking).
-  ipcMain.on('nyx:set-interactive', (_event, interactive: boolean) => {
-    if (win && !win.isDestroyed()) {
-      win.setIgnoreMouseEvents(!interactive, { forward: true })
-    }
+  // Renderer reports window-relative rects of [data-interactive] elements; main polls
+  // the cursor and toggles click-through. Cross-platform — does not rely on forwarded
+  // mousemove, which Electron only forwards on macOS/Windows, not Linux.
+  ipcMain.on('nyx:report-rects', (_event, rects: Rect[]) => {
+    if (Array.isArray(rects)) clickThrough?.setRects(rects)
   })
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      win = createNyxWindow(new SettingsStore().getAll())
-    }
+    if (!win) launch()
   })
 })
 

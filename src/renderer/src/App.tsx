@@ -1,21 +1,37 @@
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
+import type { Rect } from '@shared/hittest'
 
-// Phase 1 spike: a transparent, frameless, always-on-top, click-through window.
-// - Empty areas are click-through (input reaches the app behind Nyx).
-// - [data-interactive] regions (Nyx placeholder + the test button) capture clicks.
-// The mousemove handler hit-tests via elementFromPoint and tells the main process
-// whether to ignore mouse events.
+// Collect the window-relative rects of every [data-interactive] element.
+function collectRects(): Rect[] {
+  return Array.from(document.querySelectorAll<HTMLElement>('[data-interactive]')).map((el) => {
+    const r = el.getBoundingClientRect()
+    return {
+      x: Math.round(r.x),
+      y: Math.round(r.y),
+      width: Math.round(r.width),
+      height: Math.round(r.height),
+    }
+  })
+}
+
+// Phase 1 spike: transparent, frameless, always-on-top, click-through window.
+// The renderer reports interactive rects to main; main polls the cursor and toggles
+// setIgnoreMouseEvents. This does NOT rely on forwarded mousemove (Electron only
+// forwards moves on macOS/Windows, not Linux).
 export default function App() {
   const [count, setCount] = useState(0)
 
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      const el = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null
-      const interactive = !!el?.closest('[data-interactive]')
-      window.nyx.setInteractive(interactive)
-    }
-    window.addEventListener('mousemove', onMove)
-    return () => window.removeEventListener('mousemove', onMove)
+  // Report rects after every render so hit-testing stays accurate as the layout
+  // changes (mount + any state/layout change).
+  useLayoutEffect(() => {
+    window.nyx.reportInteractiveRects(collectRects())
+  })
+
+  // Also re-report on resize (covers size changes that don't trigger a React render).
+  useLayoutEffect(() => {
+    const ro = new ResizeObserver(() => window.nyx.reportInteractiveRects(collectRects()))
+    ro.observe(document.body)
+    return () => ro.disconnect()
   }, [])
 
   return (

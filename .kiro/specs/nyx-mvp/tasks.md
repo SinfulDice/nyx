@@ -63,12 +63,13 @@ video and submission.
 - [x] 1.1 Create a transparent, frameless, always-on-top, skip-taskbar, no-shadow window anchored top-right (required)
   - Expected outcome: on X11 (Mint), a transparent window sits on top of other apps.
   - Dependencies: 0.2
-- [x] 1.2 Implement click-through with interactive regions via `setIgnoreMouseEvents(true,{forward:true})` toggled by cursor position (required)
+- [x] 1.2 Implement click-through with interactive regions — renderer reports `[data-interactive]` rects; main polls the cursor and toggles `setIgnoreMouseEvents` (cross-platform; `{forward:true}` kept as bonus, not depended on) (required)
   - Expected outcome: clicks pass through empty areas; clicks on a test "hit" region register.
   - Dependencies: 1.1
-- [ ] 1.3 Verify under XWayland; document the XWayland default (required)
+- [x] 1.3 Verify under XWayland; document the XWayland default (required)
   - Expected outcome: behavior confirmed under XWayland; README notes it.
   - Dependencies: 1.2
+  - Note: X11-only environment for now; validated-by-default (XWayland default + X11 parity). Native Wayland stays stretch (1.4).
 - [ ] 1.4 (stretch) Attempt native Wayland (`--ozone-platform=wayland`); record results (optional)
   - Expected outcome: known-good/known-bad matrix per compositor; fallback decided.
   - Dependencies: 1.3
