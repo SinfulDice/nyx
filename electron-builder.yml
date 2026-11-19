@@ -1,0 +1,17 @@
+appId: dev.nyxcompanion.app
+productName: Nyx
+copyright: Copyright (c) 2026 Pierre-Antoine SUT
+directories:
+  output: release
+files:
+  - out/**/*
+  - package.json
+# .kiro/ is NEVER bundled — it is not listed in `files`.
+win:
+  target:
+    - nsis
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+# Linux targets (AppImage + deb) are enabled in Phase 9.

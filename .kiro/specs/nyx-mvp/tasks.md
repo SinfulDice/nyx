@@ -40,22 +40,22 @@ video and submission.
 | **Total** | **~23–31** |
 
 ## Phase 0 — Foundations & tooling (est. 2–3h)
-- [ ] 0.1 Initialize a single npm package; add the `nyx` bin entry; create `src/{shared,main,preload,renderer,assets,cli}` folders (required)
+- [x] 0.1 Initialize a single npm package; add the `nyx` bin entry; create `src/{shared,main,preload,renderer,assets,cli}` folders (required)
   - Expected outcome: `npm install` works; `@shared/*`, `@main/*`, `@renderer/*` path aliases resolve.
   - Dependencies: none
-- [ ] 0.2 Scaffold the app with electron-vite (main/preload/renderer) + React + TS strict (required)
+- [x] 0.2 Scaffold the app with electron-vite (main/preload/renderer) + React + TS strict (required)
   - Expected outcome: `npm run dev` opens an Electron window rendering React "hello".
   - Dependencies: 0.1
-- [ ] 0.3 Add ESLint + Prettier + `tsconfig.base` + path aliases; the lint-on-save and keep-readme-in-sync hooks already exist (required)
+- [x] 0.3 Add ESLint + Prettier + `tsconfig.base` + path aliases; the lint-on-save and keep-readme-in-sync hooks already exist (required)
   - Expected outcome: `npm run lint` and `npm run typecheck` pass; hook files already present and valid JSON.
   - Dependencies: 0.1
-- [ ] 0.4 Define shared types + zod schemas in `src/shared` (`NyxState`, `WakeEvent`, `HelpContext`, `Settings`, `RunResult`) (required)
+- [x] 0.4 Define shared types + zod schemas in `src/shared` (`NyxState`, `WakeEvent`, `HelpContext`, `Settings`, `RunResult`) (required)
   - Expected outcome: `src/shared` exports validated types; imported by main, preload, renderer, cli.
   - Dependencies: 0.1
-- [ ] 0.5 Add electron-store settings wrapper with zod validation (required)
+- [x] 0.5 Add electron-store settings wrapper with zod validation (required)
   - Expected outcome: settings read/write/validate; defaults applied.
   - Dependencies: 0.2, 0.4
-- [ ] 0.6 Add CI workflow: lint + typecheck + unit tests on every push (required)
+- [x] 0.6 Add CI workflow: lint + typecheck + unit tests on every push (required)
   - Expected outcome: CI runs green on push; no packaging yet.
   - Dependencies: 0.2, 0.4
 
