@@ -4,6 +4,21 @@
 > riskiest platform behavior is validated before features are built on top of it.
 > `[ ]` = not started; mark `[x]` when done. Required vs optional noted per task.
 
+## Status — stopped here (Day 1)
+
+**Done & committed (branch `master`):** Phase 0 (all); Phase 1 implementation —
+1.1 transparent window, 1.2 click-through, 1.3 XWayland-by-default, 1.6 Windows spike
+build workflow. 11 tests pass; typecheck/lint/build green.
+
+**Pending gate (before Phase 2):**
+- Re-test the X11 click-through **counter** after the polling fix — `npm run dev`,
+  then click the Nyx circle / "click me" button; the counter must increment.
+- 1.5 — verify transparency + click-through + always-on-top on Windows via the
+  `windows-spike` workflow's `.exe` artifact (not blocking Phase 2; do before Phase 9).
+
+**Next step:** once the X11 counter works, start **Phase 2 — clipboard risk spike**
+(2.1–2.4). Stretch 1.4 (native Wayland) is deferred.
+
 ## Cut line
 Deadline: **Dec 4, 2:00 PM PT**. Ship the MVP by **Dec 2** to leave time for the demo
 video and submission.
@@ -73,9 +88,10 @@ video and submission.
 - [ ] 1.4 (stretch) Attempt native Wayland (`--ozone-platform=wayland`); record results (optional)
   - Expected outcome: known-good/known-bad matrix per compositor; fallback decided.
   - Dependencies: 1.3
-- [ ] 1.5 Verify transparency + click-through + always-on-top on Windows (required)
+- [ ] 1.5 Verify transparency + click-through + always-on-top on Windows (required) — PENDING GATE
   - Expected outcome: the Windows .exe from 1.6 behaves correctly on Windows 10/11.
   - Dependencies: 1.6
+  - Status: not blocking Phase 2; run the `windows-spike` workflow, download the `.exe` artifact, test on Windows before Phase 9 packaging.
 - [x] 1.6 Add a minimal electron-builder win (NSIS) target + a GitHub Actions workflow (`windows-spike.yml`) that builds a Windows .exe of the current window spike and uploads it as an artifact (required)
   - Expected outcome: a downloadable .exe artifact in the workflow run; runs on Windows.
   - Dependencies: 1.2
