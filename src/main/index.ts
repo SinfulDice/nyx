@@ -1,52 +1,26 @@
-import { app, BrowserWindow } from 'electron'
-import { existsSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import { dirname, resolve } from 'node:path'
+import { app, BrowserWindow, ipcMain } from 'electron'
+import { createNyxWindow } from './window'
+import { SettingsStore } from './settings'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-// electron-vite may emit the preload as index.js, index.mjs, or index.cjs
-// depending on the ESM/CJS context; resolve whichever actually exists so dev and
-// packaged builds both load the right file.
-function resolvePreload(): string {
-  const dir = resolve(__dirname, '../preload')
-  for (const name of ['index.js', 'index.mjs', 'index.cjs']) {
-    const p = resolve(dir, name)
-    if (existsSync(p)) return p
-  }
-  return resolve(dir, 'index.js')
-}
-
-function createWindow(): void {
-  const win = new BrowserWindow({
-    width: 360,
-    height: 480,
-    show: false,
-    autoHideMenuBar: true,
-    webPreferences: {
-      preload: resolvePreload(),
-      contextIsolation: true,
-      nodeIntegration: false,
-      sandbox: false,
-    },
-  })
-
-  const devUrl = process.env['ELECTRON_RENDERER_URL']
-  if (devUrl) {
-    void win.loadURL(devUrl)
-  } else {
-    void win.loadFile(resolve(__dirname, '../renderer/index.html'))
-  }
-
-  win.once('ready-to-show', () => win.show())
-}
+let win: BrowserWindow | null = null
 
 app.whenReady().then(() => {
-  createWindow()
+  const settings = new SettingsStore()
+  win = createNyxWindow(settings.getAll())
+
+  // Renderer toggles click-through per cursor position: interactive=true means the
+  // cursor is over Nyx or the bubble, so capture pointer events; false = click-through
+  // (mouse moves are still forwarded so the renderer can keep tracking).
+  ipcMain.on('nyx:set-interactive', (_event, interactive: boolean) => {
+    if (win && !win.isDestroyed()) {
+      win.setIgnoreMouseEvents(!interactive, { forward: true })
+    }
+  })
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      win = createNyxWindow(new SettingsStore().getAll())
+    }
   })
 })
 

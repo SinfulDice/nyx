@@ -60,10 +60,10 @@ video and submission.
   - Dependencies: 0.2, 0.4
 
 ## Phase 1 — RISK SPIKE: transparent always-on-top click-through window (est. 3–4h)
-- [ ] 1.1 Create a transparent, frameless, always-on-top, skip-taskbar, no-shadow window anchored top-right (required)
+- [x] 1.1 Create a transparent, frameless, always-on-top, skip-taskbar, no-shadow window anchored top-right (required)
   - Expected outcome: on X11 (Mint), a transparent window sits on top of other apps.
   - Dependencies: 0.2
-- [ ] 1.2 Implement click-through with interactive regions via `setIgnoreMouseEvents(true,{forward:true})` toggled by cursor position (required)
+- [x] 1.2 Implement click-through with interactive regions via `setIgnoreMouseEvents(true,{forward:true})` toggled by cursor position (required)
   - Expected outcome: clicks pass through empty areas; clicks on a test "hit" region register.
   - Dependencies: 1.1
 - [ ] 1.3 Verify under XWayland; document the XWayland default (required)
@@ -75,7 +75,7 @@ video and submission.
 - [ ] 1.5 Verify transparency + click-through + always-on-top on Windows (required)
   - Expected outcome: the Windows .exe from 1.6 behaves correctly on Windows 10/11.
   - Dependencies: 1.6
-- [ ] 1.6 Add a minimal electron-builder win (NSIS) target + a GitHub Actions workflow (`windows-spike.yml`) that builds a Windows .exe of the current window spike and uploads it as an artifact (required)
+- [x] 1.6 Add a minimal electron-builder win (NSIS) target + a GitHub Actions workflow (`windows-spike.yml`) that builds a Windows .exe of the current window spike and uploads it as an artifact (required)
   - Expected outcome: a downloadable .exe artifact in the workflow run; runs on Windows.
   - Dependencies: 1.2
 

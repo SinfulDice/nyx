@@ -50,6 +50,15 @@ Or reinstall cleanly:
 rm -rf node_modules package-lock.json && npm install
 ```
 
+## Platform notes
+
+- **Linux / Wayland:** Nyx runs under **XWayland** by default — it does not set
+  `--ozone-platform=wayland`. This keeps transparent, always-on-top, and click-through
+  behavior consistent with X11. On a Wayland session, run Nyx as usual and it uses
+  XWayland automatically. Native Wayland is a stretch goal.
+- **Windows:** transparency, always-on-top, and click-through are verified via the
+  `windows-spike` GitHub Actions build — trigger it and download the `.exe` artifact.
+
 ## Kiro usage
 
 This repo is built with Kiro: steering docs (`.kiro/steering/`), a spec

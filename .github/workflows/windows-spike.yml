@@ -1,0 +1,45 @@
+name: Windows spike build
+
+# Builds a Windows .exe of the current window spike so transparency, click-through,
+# and always-on-top can be verified on Windows before features are built on top of it.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'electron-builder.yml'
+      - 'electron.vite.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/windows-spike.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  windows-spike:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Verify Electron binary present
+        shell: bash
+        run: |
+          if [ -z "$(ls -A node_modules/electron/dist 2>/dev/null)" ]; then
+            echo "::error::node_modules/electron/dist is empty — Electron postinstall did not run"
+            exit 1
+          fi
+          echo "Electron binary present."
+      - run: npm run build
+      - run: npx electron-builder --win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nyx-windows-spike
+          path: release/*.exe
+          if-no-files-found: error
