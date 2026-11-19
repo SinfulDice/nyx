@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# electron-vite build output
+out/
+
+# electron-builder packaging output
+release/
+dist/
+
+# Build artifacts (don't commit binaries)
+*.AppImage
+*.deb
+*.exe
+*.snap
+*.dmg
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# .kiro/ is committed and NEVER gitignored (Kiroween hackathon requirement).
+# Do NOT add .kiro to the ignore list above.

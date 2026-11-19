@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Keep README install/run instructions in sync",
+      "description": "When Kiro saves a package.json or electron-builder.yml, a sub-agent checks git diff for install/run-relevant changes and updates README.md's Install/Run sections to match. No-op if nothing user-facing changed.",
+      "trigger": "FileSave",
+      "matcher": "(^|/)(package\\.json|electron-builder\\.yml)$",
+      "action": {
+        "type": "agent",
+        "prompt": "A package.json or electron-builder.yml file was just saved. Run `git diff` to see what changed. If the change affects how the Nyx app is installed or run (npm scripts, dependencies, electron-vite/electron-builder config, or the produced build artifacts), update README.md's Install and Run sections so they stay accurate. Make only minimal, accurate edits and keep both the Linux and Windows instructions consistent. If the change has no user-facing install/run impact, do nothing and do not edit README.md."
+      }
+    }
+  ]
+}

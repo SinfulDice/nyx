@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Lint and format on save",
+      "description": "Runs the project's local eslint --fix and prettier --write on .ts/.tsx files that Kiro saves. No-op until eslint/prettier are installed (Phase 0.3). Never blocks the save.",
+      "trigger": "FileSave",
+      "matcher": "\\.(ts|tsx)$",
+      "action": {
+        "type": "command",
+        "command": "node .kiro/hooks/scripts/lint-saved.mjs",
+        "timeout": 30
+      }
+    }
+  ]
+}
