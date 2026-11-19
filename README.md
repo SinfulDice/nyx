@@ -32,6 +32,24 @@ npm run build:cli
 ./out/cli/index.js run <command>
 ```
 
+## Troubleshooting
+
+### `npm run dev` says "Error: Electron uninstall" or can't find Electron
+
+The Electron postinstall (which fetches the binary) didn't run — usually because
+npm's install-script allowlist went stale after a version bump. Fix it for the
+installed version:
+
+```bash
+node node_modules/electron/install.js
+```
+
+Or reinstall cleanly:
+
+```bash
+rm -rf node_modules package-lock.json && npm install
+```
+
 ## Kiro usage
 
 This repo is built with Kiro: steering docs (`.kiro/steering/`), a spec

@@ -18,6 +18,13 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - name: Verify Electron binary present
+        run: |
+          if [ -z "$(ls -A node_modules/electron/dist 2>/dev/null)" ]; then
+            echo "::error::node_modules/electron/dist is empty — Electron postinstall did not run (install-script allowlist mismatch?)"
+            exit 1
+          fi
+          echo "Electron binary present."
       - run: npm run typecheck
       - run: npm run lint
       - run: npm test
